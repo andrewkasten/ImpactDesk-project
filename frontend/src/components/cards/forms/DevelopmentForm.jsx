@@ -22,6 +22,7 @@ import useSWR from "swr";
 import DevelopmentsContext from "../../../contexts/DevelopmentsContext";
 import dayjs from "dayjs";
 import {fetcher} from "../../../api/fetcher";
+import { API_BASE } from "../../../api/config";
 
 setKey(import.meta.env.VITE_GEOCODE_KEY)
 setLocationType("ROOFTOP")
@@ -29,9 +30,9 @@ setLocationType("ROOFTOP")
 export default function DevelopmentForm() {
   const { refreshDevelopments: refresh } = useContext(DevelopmentsContext);
   const token = localStorage.getItem("token");
-  const { data: people = [] } = useSWR(token ? "http://localhost:8000/api/people/" : null, fetcher);
+  const { data: people = [] } = useSWR(token ? `${API_BASE}/api/people/` : null, fetcher);
   const { data: organization = [] } = useSWR(
-    token ? "http://localhost:8000/api/organizations/" : null, fetcher
+    token ? `${API_BASE}/api/organizations/` : null, fetcher
   );
   const today = dayjs();
 
@@ -106,7 +107,7 @@ export default function DevelopmentForm() {
         });
     }
 
-    await axios.post("http://localhost:8000/api/developments/", developmentObject, {
+    await axios.post(`${API_BASE}/api/developments/`, developmentObject, {
       headers: {
         Authorization: `Token ${token}`,
       },
@@ -137,7 +138,7 @@ export default function DevelopmentForm() {
     };
 
     if (selectTypeContact === "Person") {
-      await axios.post("http://localhost:8000/api/people/", personObject ,{
+      await axios.post(`${API_BASE}/api/people/`, personObject ,{
       headers: {
         Authorization: `Token ${token}`,
       },
@@ -146,7 +147,7 @@ export default function DevelopmentForm() {
     }
     if (selectTypeContact === "Organization") {
       await axios.post(
-        "http://localhost:8000/api/organizations/",
+        `${API_BASE}/api/organizations/`,
         organizationObject,
         {
       headers: {

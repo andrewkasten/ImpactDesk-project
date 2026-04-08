@@ -9,6 +9,7 @@ import DevelopmentsContext from "../../contexts/DevelopmentsContext";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import {fetcher} from "../../api/fetcher.js"
+import { API_BASE } from "../../api/config"
 // get date, get List with filter, address to lat lng, with validation, fromAddress()
 
 
@@ -23,7 +24,7 @@ export default function Developments() {
   // console.log(selectedDay.format('MMM'))
 
   const { data: developments, mutate: refreshDevelopments} = useSWR(
-    token ? `http://localhost:8000/api/developments/?date=${selectedDay.format("YYYY-MM-DD")}` : null,
+    token ? `${API_BASE}/api/developments/?date=${selectedDay.format("YYYY-MM-DD")}` : null,
     fetcher,    
   )
   const developmentsList = Array.isArray(developments) ? developments : []

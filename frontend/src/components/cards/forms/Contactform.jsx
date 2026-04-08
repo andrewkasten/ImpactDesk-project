@@ -1,6 +1,7 @@
 import { Button, TextField, Box, Card, CardContent, Typography, MenuItem, Select, InputLabel, FormControl, Grid, Dialog, DialogActions, DialogContent, DialogTitle, } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../../../api/config";
 
 
 export default function ContactForm() {
@@ -47,7 +48,7 @@ export default function ContactForm() {
     };
 
       if (selectType === "Person") {
-      await axios.post("http://localhost:8000/api/people/", personObject ,{
+      await axios.post(`${API_BASE}/api/people/`, personObject ,{
       headers: {
         Authorization: `Token ${token}`,
       },
@@ -57,7 +58,7 @@ export default function ContactForm() {
     }
     if (selectType === "Organization") {
       await axios.post(
-        "http://localhost:8000/api/organizations/",
+        `${API_BASE}/api/organizations/`,
         organizationObject,
         {
       headers: {

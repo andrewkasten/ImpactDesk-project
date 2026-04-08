@@ -6,6 +6,7 @@ import useSWR from "swr"
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import {ColorModeContext} from '../../../theme'
+import { API_BASE } from '../../api/config'
 
 const settings = [
   { name: "Profile", id: "" },
@@ -25,7 +26,7 @@ const colorMode = useContext(ColorModeContext)
     }).then((res) => res.json())
     
   const { data: users } = useSWR(
-    "http://localhost:8000/auth/users", fetcher
+    `${API_BASE}/auth/users`, fetcher
   )
   // console.log(users)
   const handleOpenUserMenu = (event) => {

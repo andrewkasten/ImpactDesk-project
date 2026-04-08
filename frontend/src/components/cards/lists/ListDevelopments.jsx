@@ -26,6 +26,7 @@ import DevelopmentsContext from "../../../contexts/DevelopmentsContext"
 import useSWR from "swr";
 import dayjs from "dayjs";
 import { fetcher } from "../../../api/fetcher";
+import { API_BASE } from "../../../api/config";
 import SvgIcon from "@mui/material/SvgIcon";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useTheme } from "@mui/material";
@@ -43,11 +44,11 @@ export default function ListDevelopments() {
   const developmentsList = Array.isArray(developments) ? developments : [];
   const token = localStorage.getItem("token");
   const { data: people } = useSWR(
-    token ? "http://localhost:8000/api/people/" : null,
+    token ? `${API_BASE}/api/people/` : null,
     fetcher,
   );
   const { data: organization } = useSWR(
-    token ? "http://localhost:8000/api/organizations/" : null,
+    token ? `${API_BASE}/api/organizations/` : null,
     fetcher,
   );
 
@@ -141,7 +142,7 @@ export default function ListDevelopments() {
     console.log('timeObj',developmentObject)
     try {
       await geocode();
-      await axios.put(`http://localhost:8000/api/developments/${id}`, developmentObject,
+      await axios.put(`${API_BASE}/api/developments/${id}`, developmentObject,
         {
           headers: {
             Authorization: `Token ${localStorage.getItem("token")}`,
@@ -156,7 +157,7 @@ export default function ListDevelopments() {
   }
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:8000/api/developments/${id}`, {
+    await axios.delete(`${API_BASE}/api/developments/${id}`, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },

@@ -10,28 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@fontsource/roboto": "^5.2.10",
-    "@mantine/core": "^8.3.18",
-    "@mantine/dates": "^8.3.18",
-    "@mantine/hooks": "^8.3.18",
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@mui/x-charts": "^8.27.5",
-    "@mui/x-date-pickers": "^8.27.2",
     "axios": "^1.13.6",
     "dayjs": "^1.11.20",
     "leaflet": "^1.9.4",
-    "localforage": "^1.10.0",
-    "match-sorter": "^8.2.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-geocode": "^2.0.1",
     "react-leaflet": "^5.0.0",
     "react-mui-sidebar": "^1.6.10",
     "react-router-dom": "^7.13.1",
-    "sort-by": "^0.0.2",
     "swr": "^2.4.1"
   },
   "devDependencies": {

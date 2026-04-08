@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { useTheme } from '@mui/material'
 import {colors} from "../../../../theme"
 import {fetcher} from "../../../api/fetcher"
+import { API_BASE } from "../../../api/config"
 
 const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov', 'Dec',
 ]
@@ -14,7 +15,7 @@ export default function DonationChart() {
 
 
   const { data: donations } = useSWR(
-    "http://localhost:8000/api/donations/", fetcher)
+    `${API_BASE}/api/donations/`, fetcher)
 
 // console.log(donations)
 

@@ -3,13 +3,14 @@ import { useTheme } from "@mui/material";
 import { colors } from "../../../../theme";
 import { fetcher } from "../../../api/fetcher";
 import useSWR from "swr";
+import { API_BASE } from "../../../api/config";
 
 export default function TotalDonations() {
   const theme = useTheme();
   const color = colors(theme.palette.mode);
 
   const { data: donations } = useSWR(
-    "http://localhost:8000/api/donations/",
+    `${API_BASE}/api/donations/`,
     fetcher,
   );
   

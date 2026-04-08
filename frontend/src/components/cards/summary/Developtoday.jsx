@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useTheme } from "@mui/material";
 import { colors } from "../../../../theme";
 import {fetcher} from "../../../api/fetcher.js"
+import { API_BASE } from "../../../api/config";
 
 export default function DevelopToday() {
   const today = dayjs();
@@ -11,7 +12,7 @@ export default function DevelopToday() {
   const color = colors(theme.palette.mode);
 
   const { data: developments } = useSWR(
-    `http://localhost:8000/api/developments/?date=${today.format("YYYY-MM-DD")}`, fetcher,
+    `${API_BASE}/api/developments/?date=${today.format("YYYY-MM-DD")}`, fetcher,
   );
   // console.log(developments)
   return (

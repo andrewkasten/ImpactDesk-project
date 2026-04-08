@@ -7,6 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import useSWR from "swr";
 import { fetcher } from "../../../api/fetcher";
+import { API_BASE } from "../../../api/config";
 import Typography from "@mui/material/Typography";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
@@ -14,7 +15,7 @@ import { useTheme } from '@mui/material'
 import {colors} from "../../../../theme"
 
 export default function TablePeople() {
-  const { data: people } = useSWR("http://localhost:8000/api/people/", fetcher);
+  const { data: people } = useSWR(`${API_BASE}/api/people/`, fetcher);
  const theme = useTheme();
   const color = colors(theme.palette.mode);
 

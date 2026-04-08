@@ -16,13 +16,14 @@ import { useTheme } from "@mui/material";
 import { colors } from "../../../../theme";
 import useSWR from "swr";
 import { fetcher } from "../../../api/fetcher";
+import { API_BASE } from "../../../api/config";
 
 export default function TopDonors() {
   const theme = useTheme();
   const color = colors(theme.palette.mode);
 
   const { data: people = [] } = useSWR(
-    "http://localhost:8000/api/people/",
+    `${API_BASE}/api/people/`,
     fetcher,
   );
   //   console.log(people.sort((a,b) => b.donation_total - a.donation_total))

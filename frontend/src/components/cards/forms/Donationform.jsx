@@ -12,7 +12,7 @@ async function formAction(prevState, formData) {
 
   const formObject = Object.fromEntries(formData.entries());
 
-  await axios.post("http://localhost:8000/api/developments/", formObject, {
+  await axios.post(`${API_BASE}/api/developments/`, formObject, {
     headers: {
       Authorization: `Token ${token}`,
     },
