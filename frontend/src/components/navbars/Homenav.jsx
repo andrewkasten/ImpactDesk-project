@@ -14,9 +14,9 @@ import idLogo from "../../assets/id-logo.png";
 
 const links = [
   { name: "Home", id: "/" },
-  { name: "Features", id: "/dashboard" },
-  { name: "About Us", id: "/aboutus" },
-  { name: "Contact", id: "/contact" },
+  // { name: "Features", id: "/#features" },
+  // { name: "About Us", id: "/aboutus" },
+  // { name: "Contact", id: "/contact" },
 ];
 
 export default function Homenav() {
