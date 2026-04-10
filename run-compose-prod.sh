@@ -1,9 +1,8 @@
-
-
 docker compose -f docker-compose.prod.yml build --no-cache
-docker compose -f docker-compose.prod.yml up -d db
-
-sleep 3
-docker compose -f docker-compose.prod.yml run --rm api python manage.py makemigrations --noinput
-docker compose -f docker-compose.prod.yml run --rm api python manage.py migrate --noinput
 docker compose -f docker-compose.prod.yml up -d
+
+sleep 5
+docker exec impactdesk-project-copy-api-1 python manage.py migrate
+docker exec impactdesk-project-copy-api-1 python manage.py loaddata initial_data
+
+
