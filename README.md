@@ -4,6 +4,9 @@ A fundraising activity planner for nonprofit fundraising managers and developmen
 
 Unlike generic CRM systems, ImpactDesk is built specifically for in-person donor relationship work and daily fundraising coordination. Users can schedule relationship-building activities, filter them by day, and view addresses on an interactive map for better route planning.
 
+![dash](./dash.webp)
+
+
 ## Tech Stack
 
 - **Frontend:** React 19 (Vite), Material UI, Leaflet, SWR, Axios, Day.js
