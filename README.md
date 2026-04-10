@@ -7,12 +7,22 @@ Unlike generic CRM systems, ImpactDesk is built specifically for in-person donor
 ## Tech Stack
 
 - **Frontend:** React 19 (Vite), Material UI, Leaflet, SWR, Axios, Day.js
-- **Backend:** Django, Django REST Framework, Gunicorn, PostgreSQL
+- **Backend:** Django, Django REST Framework, PostgreSQL
 - **Infrastructure:** Docker Compose, Nginx
 
 ## Getting Started
 
-1.  Open at 
+1. Clone repository
+2. From the root directory
+   ```
+   ./run-compose-dev.sh
+   ```
+3. Open browser to [http://localhost:5173/](http://localhost:5173/)
+
+(Optional) Create a `frontend/.env` for map geocoding:
+```
+VITE_GEOCODE_KEY=<your-google-geocode-api-key>
+```
 
 ## Features
 
