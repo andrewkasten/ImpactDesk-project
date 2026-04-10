@@ -31,7 +31,7 @@ sx={{ alignItems: "center", width: { xs: "100%", sm: "70%" } }}
     width: { sm: "100%", md: "80%" },
   }}
 >
-  Donor development is demanding. ImpactDesk helps your team plan, prioritize, and guide fundraising efforts with confidence — so you can stay focused on your mission and impact.
+  Donor development is demanding. Impact Desk helps your team plan, prioritize, and guide fundraising efforts with confidence — so you can stay focused on your mission and impact.
 </Typography>
 <Button
   variant="contained"
