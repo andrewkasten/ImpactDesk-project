@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import Homenav from "../../components/navbars/Homenav"
 import {CssBaseline, ThemeProvider} from "@mui/material"
@@ -10,21 +10,21 @@ function Root() {
   const [theme, colorMode] = useMode()
   const { userToken } = useContext(AuthContext)
 
+  if (userToken) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
     <>
-        {!userToken ? (
-          <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-         <CssBaseline />
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
           <div>
-        <Homenav />
-        <Outlet />
-        </div>
+            <Homenav />
+            <Outlet />
+          </div>
         </ThemeProvider>
-        </ColorModeContext.Provider>
-        ) : (
-        <></>
-        )}
+      </ColorModeContext.Provider>
     </>
   );
 }

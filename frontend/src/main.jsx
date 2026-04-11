@@ -34,13 +34,15 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  const [userToken, setUserToken] = useState(null);
+  const [userToken, setUserToken] = useState(sessionStorage.getItem("token"));
 
   const handleToken = (token) => {
+    sessionStorage.setItem("token", token);
     setUserToken(token);
   };
 
   const logout = () => {
+    sessionStorage.removeItem("token");
     setUserToken(null);
   };
 

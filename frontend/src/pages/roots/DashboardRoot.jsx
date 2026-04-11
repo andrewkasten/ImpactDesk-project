@@ -1,9 +1,8 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import Sidenav from "../../components/navbars/Sidenav";
 import { Box } from "@mui/material";
 import MainNav from "../../components/navbars/MainNav";
-import Homenav from "../../components/navbars/Homenav";
 import { SWRConfig } from "swr";
 import Bottomnav from "../../components/navbars/Bottomnav";
 
@@ -15,6 +14,10 @@ import AuthContext from "../../contexts/AuthContext";
 function DashboardLayout() {
   const [theme, colorMode] = useMode()
   const { userToken } = useContext(AuthContext)
+
+  if (!userToken) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <>
@@ -50,20 +53,13 @@ function DashboardLayout() {
               minWidth: 0,
             }}
           >
-            {userToken ? (
-              <>
-                <MainNav />
-                <Outlet />
-                <Box sx={{ display: {xs: "inline-table", sm: "inline-flex", md: "none"} }}>
+            <>
+              <MainNav />
+              <Outlet />
+              <Box sx={{ display: {xs: "inline-table", sm: "inline-flex", md: "none"} }}>
                 <Bottomnav />
-                </Box>
-              </>
-            ) : (
-              <>
-                <Homenav />
-                <h2>You must be logged in</h2>
-              </>
-            )}
+              </Box>
+            </>
           </Box>
         </Box>
       </SWRConfig>
