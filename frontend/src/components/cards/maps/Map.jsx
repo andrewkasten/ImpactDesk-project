@@ -1,12 +1,20 @@
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { Card, CardContent, Typography } from "@mui/material";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { time12 } from "../../../functions/formatData";
 import DevelopmentsContext from '../../../contexts/DevelopmentsContext'
 import { useContext } from "react"
 
-L.Icon.Default.imagePath = '/leaflet-images/'
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+});
 
 
 export default function Map() {
