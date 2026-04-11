@@ -41,19 +41,14 @@ export default function Signup() {
       password: formData.password,
     };
     const response = await signup(context);
-      console.log('response',response.first_name)
-      if (!response.first_name) {
+      if (!response || !response.first_name) {
         setShouldRedirect(false)
         setResponseMsg(response)
-        console.log('msg',responseMsg.username)
       } else {
         setResponseMsg(response)
         setSignupSuccess(true)
         setTimeout(() => setShouldRedirect(true), 1500)
-      
-       
       }
-    console.log(shouldRedirect)
    
   };
  
