@@ -2,10 +2,11 @@ import {   Grid,  Typography, Button,  IconButton,  Stack,} from "@mui/material"
 import Map from "../../components/cards/maps/Map.jsx";
 import ListDevelopments from "../../components/cards/lists/ListDevelopments.jsx";
 import DevelopmentForm from "../../components/cards/forms/DevelopmentForm.jsx";
-import { useState} from "react"
+import { useState, useContext} from "react"
 import dayjs from "dayjs"; //day.js.org
 import useSWR from "swr"
 import DevelopmentsContext from "../../contexts/DevelopmentsContext";
+import AuthContext from "../../contexts/AuthContext";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import {fetcher} from "../../api/fetcher.js"
@@ -18,14 +19,11 @@ export default function Developments() {
   const today = dayjs()
   const [selectedWeek, setSelectedWeek] = useState(firstWeekDay)
   const [selectedDay, setSelectedDay] = useState(today)
-  const token = localStorage.getItem("token")
+  const { userToken } = useContext(AuthContext)
 
-  // console.log(selectedWeek)
-  // console.log(selectedDay.format('MMM'))
-
-  const { data: developments, mutate: refreshDevelopments} = useSWR(
-    token ? `${API_BASE}/api/developments/?date=${selectedDay.format("YYYY-MM-DD")}` : null,
-    fetcher,    
+   const { data: developments, mutate: refreshDevelopments} = useSWR(
+    userToken ? [`${API_BASE}/api/developments/?date=${selectedDay.format("YYYY-MM-DD")}`, userToken] : null,
+    fetcher,
   )
   const developmentsList = Array.isArray(developments) ? developments : []
  

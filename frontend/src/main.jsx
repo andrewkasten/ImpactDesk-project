@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client"
 import {createBrowserRouter,createRoutesFromElements,RouterProvider, Route} from "react-router-dom";
 import PublicRoot from "./pages/roots/PublicRoot"
@@ -12,30 +12,47 @@ import Home from "./pages/home/Home"
 import Developments from "./pages/dashboard/Developments"
 import Contacts from "./pages/dashboard/Contacts"
 import Donations from "./pages/dashboard/Donations"
+import AuthContext from "./contexts/AuthContext"
 
+function App() {
+  const [userToken, setUserToken] = useState(null);
 
+  const handleToken = (token) => {
+    setUserToken(token);
+  };
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route path="/" element={<PublicRoot />} errorElement={<ErrorPage />}>
-        <Route index element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-      </Route>
-      <Route path="/dashboard" element={<DashboardRoot />}>
-        <Route index element={<DashboardHome />} />
-        <Route path="developments" element={<Developments />} />
-        <Route path="contacts" element={<Contacts />} />
-        <Route path="donations" element={<Donations />} />
-         <Route path="logout" element={<Logout />} />
-      </Route>
-    </>
-  ),
-);
+  const logout = () => {
+    setUserToken(null);
+  };
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route path="/" element={<PublicRoot />} errorElement={<ErrorPage />}>
+          <Route index element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Route>
+        <Route path="/dashboard" element={<DashboardRoot />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="developments" element={<Developments />} />
+          <Route path="contacts" element={<Contacts />} />
+          <Route path="donations" element={<Donations />} />
+          <Route path="logout" element={<Logout />} />
+        </Route>
+      </>
+    ),
+  );
+
+  return (
+    <AuthContext.Provider value={{ userToken, handleToken, logout }}>
+      <RouterProvider router={router} />
+    </AuthContext.Provider>
+  );
+}
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>      
-       <RouterProvider router={router} />        
+  <StrictMode>
+    <App />
   </StrictMode>,
 );

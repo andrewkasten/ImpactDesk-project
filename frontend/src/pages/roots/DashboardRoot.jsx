@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { useContext } from "react";
 import Sidenav from "../../components/navbars/Sidenav";
 import { Box } from "@mui/material";
 import MainNav from "../../components/navbars/MainNav";
@@ -8,10 +9,12 @@ import Bottomnav from "../../components/navbars/Bottomnav";
 
 import {CssBaseline, ThemeProvider} from "@mui/material"
 import {ColorModeContext, useMode} from '../../../theme'
+import AuthContext from "../../contexts/AuthContext";
 
 
 function DashboardLayout() {
   const [theme, colorMode] = useMode()
+  const { userToken } = useContext(AuthContext)
 
   return (
     <>
@@ -47,7 +50,7 @@ function DashboardLayout() {
               minWidth: 0,
             }}
           >
-            {localStorage.getItem("token") ? (
+            {userToken ? (
               <>
                 <MainNav />
                 <Outlet />

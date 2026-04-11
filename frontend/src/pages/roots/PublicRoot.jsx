@@ -1,15 +1,18 @@
 import { Outlet } from "react-router-dom";
+import { useContext } from "react";
 import Homenav from "../../components/navbars/Homenav"
 import {CssBaseline, ThemeProvider} from "@mui/material"
 import {ColorModeContext, useMode} from '../../../theme'
+import AuthContext from "../../contexts/AuthContext";
 
 
 function Root() {
   const [theme, colorMode] = useMode()
+  const { userToken } = useContext(AuthContext)
 
   return (
     <>
-        {!localStorage.getItem("token") ? (
+        {!userToken ? (
           <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
          <CssBaseline />

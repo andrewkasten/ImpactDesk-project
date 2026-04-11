@@ -7,6 +7,8 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import {ColorModeContext} from '../../../theme'
 import { API_BASE } from '../../api/config'
+import AuthContext from "../../contexts/AuthContext"
+import { fetcher } from "../../api/fetcher"
 
 const settings = [
   { name: "Profile", id: "" },
@@ -15,18 +17,12 @@ const settings = [
 
 export default function MainNav() {
   const [menuPosition, setMenuPosition] = useState(null);
-const colorMode = useContext(ColorModeContext)
+  const colorMode = useContext(ColorModeContext)
+  const { userToken } = useContext(AuthContext)
   const theme = useTheme();
 
-  const fetcher = (url) =>
-    fetch(url, {
-      headers: {
-        Authorization: `Token ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => res.json())
-    
   const { data: users } = useSWR(
-    `${API_BASE}/auth/users`, fetcher
+    userToken ? [`${API_BASE}/auth/users`, userToken] : null, fetcher
   )
   // console.log(users)
   const handleOpenUserMenu = (event) => {

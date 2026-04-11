@@ -20,6 +20,7 @@ import axios from "axios";
 import { setKey, fromAddress, setLocationType } from "react-geocode";
 import useSWR from "swr";
 import DevelopmentsContext from "../../../contexts/DevelopmentsContext";
+import AuthContext from "../../../contexts/AuthContext";
 import dayjs from "dayjs";
 import {fetcher} from "../../../api/fetcher";
 import { API_BASE } from "../../../api/config";
@@ -29,10 +30,10 @@ setLocationType("ROOFTOP")
 
 export default function DevelopmentForm() {
   const { refreshDevelopments: refresh } = useContext(DevelopmentsContext);
-  const token = localStorage.getItem("token");
-  const { data: people = [] } = useSWR(token ? `${API_BASE}/api/people/` : null, fetcher);
+  const { userToken } = useContext(AuthContext);
+  const { data: people = [] } = useSWR(userToken ? [`${API_BASE}/api/people/`, userToken] : null, fetcher);
   const { data: organization = [] } = useSWR(
-    token ? `${API_BASE}/api/organizations/` : null, fetcher
+    userToken ? [`${API_BASE}/api/organizations/`, userToken] : null, fetcher
   );
   const today = dayjs();
 
@@ -40,7 +41,7 @@ export default function DevelopmentForm() {
   const [date, setDate] = useState(today.format("YYYY-MM-DD"));
   const [time, setTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [status, setStatus] = useState("Pending");
+  const [status, setStatus] = useState("pending");
   const [note, setNote] = useState("");
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
@@ -109,7 +110,7 @@ export default function DevelopmentForm() {
 
     await axios.post(`${API_BASE}/api/developments/`, developmentObject, {
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Token ${userToken}`,
       },
     });
     await refresh();
@@ -140,7 +141,7 @@ export default function DevelopmentForm() {
     if (selectTypeContact === "Person") {
       await axios.post(`${API_BASE}/api/people/`, personObject ,{
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Token ${userToken}`,
       },
     }
       );
@@ -151,7 +152,7 @@ export default function DevelopmentForm() {
         organizationObject,
         {
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Token ${userToken}`,
       },
     }
       );
@@ -188,7 +189,7 @@ export default function DevelopmentForm() {
                     required
                     >
                     <MenuItem value={"Meeting"}>Meeting</MenuItem>
-                    <MenuItem value={"Event"}>Visit</MenuItem>
+                    <MenuItem value={"Visit"}>Visit</MenuItem>
                     <MenuItem value={"Event"}>Event</MenuItem>
                   </Select>
                 </FormControl>
@@ -211,14 +212,14 @@ export default function DevelopmentForm() {
                 </FormControl>
                 
               </Grid>
-              <Grid sx={{ml:-1, mr:-3}}size={{ xs: 4, sm: 4, md: 4, lg: 1.8 }}>
+              {/* <Grid sx={{ml:-1, mr:-3}}size={{ xs: 4, sm: 4, md: 4, lg: 1.8 }}>
               <Button
                 sx={{ m: 1,p:.5 }}
                 variant="outlined"
                 onClick={() => handleClickOpen()}>
                 Add Contact
               </Button>
-              </Grid>
+              </Grid> */}
               <Grid size={{ xs: 5, sm: 5, md: 5, lg: 3 }}>
                 
                 <FormControl fullWidth>

@@ -23,6 +23,7 @@ import axios from "axios"
 import { setKey, fromAddress, setLocationType } from "react-geocode"
 import { time12 } from "../../../functions/formatData";
 import DevelopmentsContext from "../../../contexts/DevelopmentsContext"
+import AuthContext from "../../../contexts/AuthContext"
 import useSWR from "swr";
 import dayjs from "dayjs";
 import { fetcher } from "../../../api/fetcher";
@@ -42,13 +43,13 @@ export default function ListDevelopments() {
   const { developments, refreshDevelopments: refresh } =
     useContext(DevelopmentsContext);
   const developmentsList = Array.isArray(developments) ? developments : [];
-  const token = localStorage.getItem("token");
+  const { userToken } = useContext(AuthContext);
   const { data: people } = useSWR(
-    token ? `${API_BASE}/api/people/` : null,
+    userToken ? [`${API_BASE}/api/people/`, userToken] : null,
     fetcher,
   );
   const { data: organization } = useSWR(
-    token ? `${API_BASE}/api/organizations/` : null,
+    userToken ? [`${API_BASE}/api/organizations/`, userToken] : null,
     fetcher,
   );
 
@@ -67,6 +68,7 @@ export default function ListDevelopments() {
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
   const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [selectTypeContact, setSelectTypeContact] = useState("");
   const [selectPerson, setSelectPerson] = useState("");
 
@@ -75,6 +77,7 @@ export default function ListDevelopments() {
   //   console.log('setLongitude:',longitude)
 
   const handleClickOpen = (development) => {
+    setEditId(development.id);
     setOpen(true);
     setSelectTypeContact(development.people ? "Person" : "Organization");
     setSelectPerson(development.people ? development.people : development.organization);
@@ -91,8 +94,6 @@ export default function ListDevelopments() {
     setLatitude(development.lat);
     setLongitude(development.lng);
     development.people ? setPeopleID(development.people) : setOrganizationID(development.organization);
-    console.log('timeOpen',development.time)
-
   };
  
 
@@ -112,8 +113,7 @@ export default function ListDevelopments() {
         const { lat, lng } = results[0].geometry.location;
         setLatitude(lat);
         setLongitude(lng);
-        // console.log('geoLat:', lat);
-        // console.log('geoLng:', lng);
+        
         return { lat, lng };
       } catch (error) {
         console.error(error);
@@ -139,13 +139,13 @@ export default function ListDevelopments() {
       lat: latitude,
       lng: longitude,
     };
-    console.log('timeObj',developmentObject)
+    // console.log('timeObj',developmentObject)
     try {
       await geocode();
       await axios.put(`${API_BASE}/api/developments/${id}`, developmentObject,
         {
           headers: {
-            Authorization: `Token ${localStorage.getItem("token")}`,
+            Authorization: `Token ${userToken}`,
           },
         },
       );
@@ -159,7 +159,7 @@ export default function ListDevelopments() {
   const handleDelete = async (id) => {
     await axios.delete(`${API_BASE}/api/developments/${id}`, {
       headers: {
-        Authorization: `Token ${localStorage.getItem("token")}`,
+        Authorization: `Token ${userToken}`,
       },
     });
     await refresh();
@@ -237,185 +237,185 @@ export default function ListDevelopments() {
                     onClick={() => handleDelete(development.id)}>
                     Delete
                   </Button>
-                  <Dialog open={open} onClose={handleClose}>
-                  <Box
-                    autoComplete="on"
-                    sx={{
-                      display: "grid",
-                      direction: "row",
-                    }}>
-                    <DialogTitle>Edit</DialogTitle>
-                    <DialogContent>
-                      <Box
-                        component="form"
-                        sx={{
-                          display: "grid",
-                          gridRow: { xs: 1, sm: 1, md: 2, lg: 3 },
-                          gap: 2,
-                          m: 1,
-                        }}
-                        onSubmit={(e) => { e.preventDefault(); handleEdit(development.id); }}
-                        >
-                        <FormControl fullWidth>
-                          <InputLabel id="development-type">Type</InputLabel>
-                          <Select
-                            labelId="development-type"
-                            label="Type"
-                            defaultValue={type}
-                            onChange={(e) => setType(e.target.value)}
-                            fullWidth>
-                            <MenuItem value={"Meeting"}>Meeting</MenuItem>
-                            <MenuItem value={"Visit"}>Visit</MenuItem>
-                            <MenuItem value={"Event"}>Event</MenuItem>
-                          </Select>
-                        </FormControl>
-                        <FormControl>
-                          <InputLabel id="development-contact-label">
-                            Contact
-                          </InputLabel>
-                          <Select
-                            labelId="development-contact-label"
-                            label="contact"
-                            defaultValue={selectTypeContact}
-                            onChange={handleSelect}
-                            fullWidth>
-                            <MenuItem value={"Person"}>Person</MenuItem>
-                            <MenuItem value={"Organization"}>
-                              Organization
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-
-                        <Box sx={{ gridRow: { xs: 1, sm: 1, md: 2, lg: 3 } }}>
-                          <FormControl>
-                            <InputLabel id="development-person-label"></InputLabel>
-                            <Select
-                              labelId="development-person-label"
-                              onChange={(e) => {
-                                selectTypeContact === "Person" ?
-                                  setPeopleID(e.target.value)
-                                : setOrganizationID(e.target.value);
-                              }}
-                              defaultValue={selectPerson}
-                              fullWidth>
-                              {selectTypeContact === "Person" ?
-                                people?.map((person) => (
-                                  <MenuItem key={person.id} value={person.id}>
-                                    {person.first_name} {person.last_name}
-                                  </MenuItem>
-                                ))
-                              : null}
-                              {selectTypeContact == "Organization" ?
-                                organization?.map((organization) => (
-                                  <MenuItem
-                                    key={organization.id}
-                                    value={organization.id}>
-                                    {organization.title}
-                                  </MenuItem>
-                                ))
-                              : null}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <TextField
-                          label="Street"
-                          variant="outlined"
-                          defaultValue={street}
-                          onChange={(e) => setStreet(e.target.value)}
-                          fullWidth
-                          slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                          label="City"
-                          variant="outlined"
-                          defaultValue={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          fullWidth
-                          slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                          label="State"
-                          variant="outlined"
-                          defaultValue={state}
-                          onChange={(e) => setState(e.target.value)}
-                          fullWidth
-                          slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                          label="Zip Code"
-                          variant="outlined"
-                          defaultValue={zipCode}
-                          onChange={(e) => setZipCode(e.target.value)}
-                          fullWidth
-                          slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                          label="Notes"
-                          id="standard-multiline-static"
-                          multiline
-                          rows={2.5}
-                          variant="outlined"
-                          defaultValue={note}
-                          onChange={(e) => setNote(e.target.value)}
-                          fullWidth
-                          sx={{ gridRow: { xs: 2, md: 2, lg: 3 } }}
-                          slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                          label="Date"
-                          type="date"
-                          variant="outlined"
-                          defaultValue={date}
-                          onChange={(e) => setDate(e.target.value)}
-                          fullWidth
-                          slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                          label="Start Time"
-                          type="time"
-                          variant="outlined"
-                          defaultValue={time}
-                          onChange={(e) => setTime(e.target.value) }
-
-                          fullWidth
-                          slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <TextField
-                          label="End Time"
-                          type="time"
-                          variant="outlined"
-                          defaultValue={endTime}
-                          onChange={(e) => setEndTime(e.target.value) }
-                          fullWidth
-                          slotProps={{ inputLabel: { shrink: true } }}
-                        />
-                        <FormControl fullWidth>
-                          <InputLabel id="development-status">Status</InputLabel>
-                          <Select
-                            labelId="development-status"
-                            label="Status"
-                            defaultValue={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            fullWidth>
-                            <MenuItem value={"scheduled"}>Scheduled</MenuItem>
-                            <MenuItem value={"completed"}>Completed</MenuItem>
-                            <MenuItem value={"canceled"}>Canceled</MenuItem>
-                          </Select>
-                        </FormControl>
-                        <Button onClick={handleClose}>Cancel</Button>
-                      <Button type="submit">
-                        Submit
-                      </Button>
-                      </Box>
-                    </DialogContent>
-                    <DialogActions>
-                     
-                    </DialogActions>
-                  </Box>
-                </Dialog>
               </ListItem>
             </List>
-          ))}          
+          ))}
+          <Dialog open={open} onClose={handleClose}>
+            <Box
+              autoComplete="on"
+              sx={{
+                display: "grid",
+                direction: "row",
+              }}>
+              <DialogTitle>Edit</DialogTitle>
+              <DialogContent>
+                <Box
+                  component="form"
+                  sx={{
+                    display: "grid",
+                    gridRow: { xs: 1, sm: 1, md: 2, lg: 3 },
+                    gap: 2,
+                    m: 1,
+                  }}
+                  onSubmit={(e) => { e.preventDefault(); handleEdit(editId); }}
+                  >
+                  <FormControl fullWidth>
+                    <InputLabel id="development-type">Type</InputLabel>
+                    <Select
+                      labelId="development-type"
+                      label="Type"
+                      defaultValue={type}
+                      onChange={(e) => setType(e.target.value)}
+                      fullWidth>
+                      <MenuItem value={"Meeting"}>Meeting</MenuItem>
+                      <MenuItem value={"Visit"}>Visit</MenuItem>
+                      <MenuItem value={"Event"}>Event</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <FormControl>
+                    <InputLabel id="development-contact-label">
+                      Contact
+                    </InputLabel>
+                    <Select
+                      labelId="development-contact-label"
+                      label="contact"
+                      defaultValue={selectTypeContact}
+                      onChange={handleSelect}
+                      fullWidth>
+                      <MenuItem value={"Person"}>Person</MenuItem>
+                      <MenuItem value={"Organization"}>
+                        Organization
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <Box sx={{ gridRow: { xs: 1, sm: 1, md: 2, lg: 3 } }}>
+                    <FormControl>
+                      <InputLabel id="development-person-label"></InputLabel>
+                      <Select
+                        labelId="development-person-label"
+                        onChange={(e) => {
+                          selectTypeContact === "Person" ?
+                            setPeopleID(e.target.value)
+                          : setOrganizationID(e.target.value);
+                        }}
+                        defaultValue={selectPerson}
+                        fullWidth>
+                        {selectTypeContact === "Person" ?
+                          people?.map((person) => (
+                            <MenuItem key={person.id} value={person.id}>
+                              {person.first_name} {person.last_name}
+                            </MenuItem>
+                          ))
+                        : null}
+                        {selectTypeContact == "Organization" ?
+                          organization?.map((organization) => (
+                            <MenuItem
+                              key={organization.id}
+                              value={organization.id}>
+                              {organization.title}
+                            </MenuItem>
+                          ))
+                        : null}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <TextField
+                    label="Street"
+                    variant="outlined"
+                    defaultValue={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                    fullWidth
+                    slotProps={{ inputLabel: { shrink: true } }}
+                  />
+                  <TextField
+                    label="City"
+                    variant="outlined"
+                    defaultValue={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    fullWidth
+                    slotProps={{ inputLabel: { shrink: true } }}
+                  />
+                  <TextField
+                    label="State"
+                    variant="outlined"
+                    defaultValue={state}
+                    onChange={(e) => setState(e.target.value)}
+                    fullWidth
+                    slotProps={{ inputLabel: { shrink: true } }}
+                  />
+                  <TextField
+                    label="Zip Code"
+                    variant="outlined"
+                    defaultValue={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
+                    fullWidth
+                    slotProps={{ inputLabel: { shrink: true } }}
+                  />
+                  <TextField
+                    label="Notes"
+                    id="standard-multiline-static"
+                    multiline
+                    rows={2.5}
+                    variant="outlined"
+                    defaultValue={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    fullWidth
+                    sx={{ gridRow: { xs: 2, md: 2, lg: 3 } }}
+                    slotProps={{ inputLabel: { shrink: true } }}
+                  />
+                  <TextField
+                    label="Date"
+                    type="date"
+                    variant="outlined"
+                    defaultValue={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    fullWidth
+                    slotProps={{ inputLabel: { shrink: true } }}
+                  />
+                  <TextField
+                    label="Start Time"
+                    type="time"
+                    variant="outlined"
+                    defaultValue={time}
+                    onChange={(e) => setTime(e.target.value) }
+
+                    fullWidth
+                    slotProps={{ inputLabel: { shrink: true } }}
+                  />
+                  <TextField
+                    label="End Time"
+                    type="time"
+                    variant="outlined"
+                    defaultValue={endTime}
+                    onChange={(e) => setEndTime(e.target.value) }
+                    fullWidth
+                    slotProps={{ inputLabel: { shrink: true } }}
+                  />
+                  <FormControl fullWidth>
+                    <InputLabel id="development-status">Status</InputLabel>
+                    <Select
+                      labelId="development-status"
+                      label="Status"
+                      defaultValue={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                      fullWidth>
+                      <MenuItem value={"scheduled"}>Scheduled</MenuItem>
+                      <MenuItem value={"completed"}>Completed</MenuItem>
+                      <MenuItem value={"canceled"}>Canceled</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <Button onClick={handleClose}>Cancel</Button>
+                  <Button type="submit">
+                    Submit
+                  </Button>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+
+              </DialogActions>
+            </Box>
+          </Dialog>
         </CardContent>
       </Card>
     </>

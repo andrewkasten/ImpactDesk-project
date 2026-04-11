@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { login } from "../../api/authApi";
 import { Navigate } from "react-router-dom";
 import {
@@ -13,18 +13,14 @@ import {
   Container,
 } from "@mui/material";
 import idMonogram from '../../assets/id-Monogram.png'
+import AuthContext from "../../contexts/AuthContext";
 
 export default function Login({}) {
+  const { handleToken } = useContext(AuthContext);
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [responseMsg, setResponseMsg] = useState("");
   const [shouldRedirect, setShouldRedirect] = useState(false);
-  const [userToken, setUserToken] = useState(null);
 
-  const handleToken = (token) => {
-    setFormData({ username: "", password: "" });
-    setUserToken(token);
-    localStorage.setItem("token", token);
-  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -44,8 +40,8 @@ export default function Login({}) {
       setResponseMsg("Error logging in");
     } else {
       handleToken(token);
+      setFormData({ username: "", password: "" });
       setShouldRedirect(true);
-      localStorage.setItem("token", token);
     }
   };
   if (shouldRedirect) {

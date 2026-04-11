@@ -1,11 +1,14 @@
 import { Button, TextField, Box, Card, CardContent, Typography, MenuItem, Select, InputLabel, FormControl, Grid, Dialog, DialogActions, DialogContent, DialogTitle, } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
+import { useSWRConfig } from "swr";
 import { API_BASE } from "../../../api/config";
+import AuthContext from "../../../contexts/AuthContext";
 
 
 export default function ContactForm() {
-    const token = localStorage.getItem("token");  
+    const { mutate } = useSWRConfig();
+    const { userToken } = useContext(AuthContext);  
         
     const [selectType, setSelectType] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -50,11 +53,10 @@ export default function ContactForm() {
       if (selectType === "Person") {
       await axios.post(`${API_BASE}/api/people/`, personObject ,{
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Token ${userToken}`,
       },
-    }
-
-      );
+    });
+      await mutate(`${API_BASE}/api/people/`);
     }
     if (selectType === "Organization") {
       await axios.post(
@@ -62,10 +64,11 @@ export default function ContactForm() {
         organizationObject,
         {
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Token ${userToken}`,
       },
     }
       );
+      await mutate(`${API_BASE}/api/organizations/`);
     }
 
   }
