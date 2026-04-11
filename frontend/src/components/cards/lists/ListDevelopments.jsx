@@ -397,9 +397,9 @@ export default function ListDevelopments() {
                             defaultValue={status}
                             onChange={(e) => setStatus(e.target.value)}
                             fullWidth>
-                            <MenuItem value={"Scheduled"}>Scheduled</MenuItem>
-                            <MenuItem value={"Completed"}>Completed</MenuItem>
-                            <MenuItem value={"Canceled"}>Canceled</MenuItem>
+                            <MenuItem value={"scheduled"}>Scheduled</MenuItem>
+                            <MenuItem value={"completed"}>Completed</MenuItem>
+                            <MenuItem value={"canceled"}>Canceled</MenuItem>
                           </Select>
                         </FormControl>
                         <Button onClick={handleClose}>Cancel</Button>
