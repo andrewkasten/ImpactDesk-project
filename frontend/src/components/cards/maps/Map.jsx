@@ -1,10 +1,12 @@
 import "leaflet/dist/leaflet.css";
+import L from 'leaflet';
 import { Card, CardContent, Typography } from "@mui/material";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { time12 } from "../../../functions/formatData";
 import DevelopmentsContext from '../../../contexts/DevelopmentsContext'
 import { useContext } from "react"
 
+L.Icon.Default.imagePath = '/leaflet-images/'
 
 
 export default function Map() {
