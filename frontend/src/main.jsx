@@ -14,6 +14,25 @@ import Contacts from "./pages/dashboard/Contacts"
 import Donations from "./pages/dashboard/Donations"
 import AuthContext from "./contexts/AuthContext"
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+      <Route path="/" element={<PublicRoot />} errorElement={<ErrorPage />}>
+        <Route index element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Route>
+      <Route path="/dashboard" element={<DashboardRoot />}>
+        <Route index element={<DashboardHome />} />
+        <Route path="developments" element={<Developments />} />
+        <Route path="contacts" element={<Contacts />} />
+        <Route path="donations" element={<Donations />} />
+        <Route path="logout" element={<Logout />} />
+      </Route>
+    </>
+  ),
+);
+
 function App() {
   const [userToken, setUserToken] = useState(null);
 
@@ -24,25 +43,6 @@ function App() {
   const logout = () => {
     setUserToken(null);
   };
-
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        <Route path="/" element={<PublicRoot />} errorElement={<ErrorPage />}>
-          <Route index element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Route>
-        <Route path="/dashboard" element={<DashboardRoot />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="developments" element={<Developments />} />
-          <Route path="contacts" element={<Contacts />} />
-          <Route path="donations" element={<Donations />} />
-          <Route path="logout" element={<Logout />} />
-        </Route>
-      </>
-    ),
-  );
 
   return (
     <AuthContext.Provider value={{ userToken, handleToken, logout }}>
