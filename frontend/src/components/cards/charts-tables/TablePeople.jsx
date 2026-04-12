@@ -6,18 +6,32 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import useSWR from "swr";
+import { useContext } from "react";
 import { fetcher } from "../../../api/fetcher";
 import { API_BASE } from "../../../api/config";
+import AuthContext from "../../../contexts/AuthContext";
 import Typography from "@mui/material/Typography";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
 import { useTheme } from '@mui/material'
 import {colors} from "../../../../theme"
+import axios from "axios";
+
 
 export default function TablePeople() {
-  const { data: people } = useSWR(`${API_BASE}/api/people/`, fetcher);
+  const { userToken } = useContext(AuthContext);
+  const { data: people, mutate: refreshPeople } = useSWR(userToken ? [`${API_BASE}/api/people/`, userToken] : null, fetcher);
  const theme = useTheme();
   const color = colors(theme.palette.mode);
+
+
+  const handleContactDelete = async (id, selectType) => {
+    await axios.delete(`${API_BASE}/api/people/${id}`, { headers: {
+      Authorization: `Token ${userToken}`,
+    }});
+    await refreshPeople();
+    await refreshOrganization();
+  };
 
     return (
     <TableContainer component={Paper} sx={{ borderRadius: 4, p:1}}>
@@ -53,7 +67,7 @@ export default function TablePeople() {
               <TableCell align="center">{person.zip_code}</TableCell>
               <TableCell style={{color:`${color.success[600]}`}} align="center">${person.donation_total}</TableCell>
               <TableCell>
-                <IconButton>
+                <IconButton onClick={() => handleContactDelete(person.id)}>
                   <DeleteOutlineIcon sx={{color:`${color.error[400]}`}} />
                 </IconButton>
               </TableCell>

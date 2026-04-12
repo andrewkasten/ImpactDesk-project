@@ -1,10 +1,12 @@
 import { BarChart } from '@mui/x-charts/BarChart'
 import {Box, Card, CardContent,Typography, Stack} from "@mui/material"
 import useSWR from "swr";
+import { useContext } from "react";
 import { useTheme } from '@mui/material'
 import {colors} from "../../../../theme"
 import {fetcher} from "../../../api/fetcher"
 import { API_BASE } from "../../../api/config"
+import AuthContext from "../../../contexts/AuthContext"
 
 const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov', 'Dec',
 ]
@@ -12,10 +14,10 @@ const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 export default function DonationChart() {
   const theme = useTheme();
   const color = colors(theme.palette.mode);
-
+  const { userToken } = useContext(AuthContext);
 
   const { data: donations } = useSWR(
-    `${API_BASE}/api/donations/`, fetcher)
+    userToken ? [`${API_BASE}/api/donations/`, userToken] : null, fetcher)
 
 // console.log(donations)
 

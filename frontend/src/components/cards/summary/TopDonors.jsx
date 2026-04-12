@@ -15,15 +15,18 @@ import Looks5OutlinedIcon from "@mui/icons-material/Looks5Outlined";
 import { useTheme } from "@mui/material";
 import { colors } from "../../../../theme";
 import useSWR from "swr";
+import { useContext } from "react";
 import { fetcher } from "../../../api/fetcher";
 import { API_BASE } from "../../../api/config";
+import AuthContext from "../../../contexts/AuthContext";
 
 export default function TopDonors() {
   const theme = useTheme();
   const color = colors(theme.palette.mode);
+  const { userToken } = useContext(AuthContext);
 
   const { data: people = [] } = useSWR(
-    `${API_BASE}/api/people/`,
+    userToken ? [`${API_BASE}/api/people/`, userToken] : null,
     fetcher,
   );
   //   console.log(people.sort((a,b) => b.donation_total - a.donation_total))

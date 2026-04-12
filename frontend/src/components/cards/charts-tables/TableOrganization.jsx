@@ -6,15 +6,17 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import useSWR from 'swr'
+import { useContext } from "react"
 import {fetcher} from "../../../api/fetcher"
 import { API_BASE } from "../../../api/config"
+import AuthContext from "../../../contexts/AuthContext"
 import Typography from '@mui/material/Typography';
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
 
 export default function TableOrganization() {
-  
-  const { data: organization} = useSWR(`${API_BASE}/api/organizations/`, fetcher)
+  const { userToken } = useContext(AuthContext);
+  const { data: organization} = useSWR(userToken ? [`${API_BASE}/api/organizations/`, userToken] : null, fetcher)
   // console.log(people)
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 4, p:1}}>
